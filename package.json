@@ -1,0 +1,26 @@
+{
+  "name": "wowz-cloud-api",
+  "version": "1.0.0",
+  "description": "Multi-service REST API platform providing unified access to AI-powered image generation services (Midjourney, Ideogram, ChatGPT) through browser automation and async job processing.",
+  "main": "webhook-server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lovecastle/wowz-cloud-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lovecastle/wowz-cloud-api/issues"
+  },
+  "homepage": "https://github.com/lovecastle/wowz-cloud-api#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

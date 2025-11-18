@@ -69,3 +69,22 @@ prompt.md
 
 # Gemini CLI settings (symlink to .claude/.mcp.json)
 .gemini/settings.json
+
+# Webhook logs
+webhook.log
+
+# Service logs
+*/logs/*.log
+logs/*.log
+
+# Browser profiles and cache
+*/midjourney-profile/
+*/ideogram-profile/
+*/chatgpt-profile/
+*/clipdrop-profile/
+*-profile/Default/DIPS*
+*-profile/Default/*Cache/
+*-profile/*Cache/
+
+# Compressed archives
+*.zip

@@ -1,0 +1,6 @@
+2025/11/18-00:00:16.882 4eb7d Reusing MANIFEST /root/chatgpt/gpt-profile/Default/shared_proto_db/MANIFEST-000001
+2025/11/18-00:00:16.883 4eb7d Recovering log #7
+2025/11/18-00:00:16.896 4eb7d Reusing old log /root/chatgpt/gpt-profile/Default/shared_proto_db/000007.log 
+2025/11/18-00:00:22.392 4eb6c Level-0 table #11: started
+2025/11/18-00:00:22.398 4eb6c Level-0 table #11: 74952 bytes OK
+2025/11/18-00:00:22.401 4eb6c Delete type=0 #7

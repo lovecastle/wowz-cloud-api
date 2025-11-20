@@ -88,3 +88,5 @@ logs/*.log
 
 # Compressed archives
 *.zip
+# Ignore Git Commit Genie data
+.gitgenie/**

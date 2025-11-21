@@ -126,6 +126,28 @@ curl -X POST http://localhost:3000/api/remix \
   }'
 ```
 
+### Veo3 Service
+
+**Port**: 3003
+**Status**: Beta ⚠️
+**Documentation**: [veo3/README.md](veo3/README.md)
+
+**Capabilities**:
+- Text-to-video generation with Google Veo 3.1
+- High-quality 5-10 second video clips
+- Async job processing with status tracking
+- Automatic video download
+- N8N workflow integration
+
+**Quick Example**:
+```bash
+curl -X POST http://localhost:3003/veo3/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A cat playing with a ball of yarn in slow motion"
+  }'
+```
+
 ### ChatGPT Service
 
 **Port**: TBD
@@ -238,6 +260,16 @@ sudo journalctl -u ideogram-api -f
 | `/api/upscale` | POST | Upscale image |
 | `/api/removebackground` | POST | Remove background |
 | `/api/genimageprompt` | POST | Text-to-image |
+
+### Veo3
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Service health check |
+| `/veo3/generate` | POST | Generate video from prompt |
+| `/veo3/job/:jobId` | GET | Check job status |
+| `/veo3/download/:filename` | GET | Download generated video |
+| `/veo3/jobs` | GET | List all jobs |
 
 ## Documentation
 

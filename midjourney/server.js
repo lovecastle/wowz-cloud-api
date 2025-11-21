@@ -330,7 +330,9 @@ app.post('/midjourney/genimage', async (req, res) => {
   healthStatus.lastRequest = new Date().toISOString();
 
   try {
-    const { prompt, url_image, options = {}, idea_id: ideaId, user_id: userId } = req.body;
+    // Accept both design_id and idea_id for backward compatibility
+    const { prompt, url_image, options = {}, design_id, idea_id, user_id: userId } = req.body;
+    const designId = design_id || idea_id; // Prefer design_id, fallback to idea_id
 
     if (!prompt) {
       throw new Error('Prompt là bắt buộc');
@@ -339,11 +341,11 @@ app.post('/midjourney/genimage', async (req, res) => {
     console.log('🎨 Nhận yêu cầu generate ảnh:');
     console.log('📝 Prompt:', prompt);
     console.log('⚙️ Options:', options);
-    console.log('🆔 Idea ID:', ideaId || 'N/A (standalone mode)');
+    console.log('🆔 Design ID:', designId || 'N/A (standalone mode)');
     console.log('👤 User ID:', userId || 'N/A');
 
-    // Update job status to 'processing' when request is received (only if idea_id provided)
-    if (supabaseAdmin && ideaId) {
+    // Update job status to 'processing' when request is received (only if design_id provided)
+    if (supabaseAdmin && designId) {
       try {
         await supabaseAdmin
           .from('product_design')
@@ -352,12 +354,12 @@ app.post('/midjourney/genimage', async (req, res) => {
             job_created_at: new Date().toISOString(),
             job_updated_at: new Date().toISOString()
           })
-          .eq('id', ideaId);
-        console.log('✅ Updated job status to processing for idea:', ideaId);
+          .eq('id', designId);
+        console.log('✅ Updated job status to processing for design:', designId);
       } catch (dbError) {
         console.error('❌ Error updating job status to processing:', dbError.message);
       }
-    } else if (!ideaId) {
+    } else if (!designId) {
       console.log('ℹ️ Running in standalone mode (no database tracking)');
     }
 
@@ -370,15 +372,15 @@ app.post('/midjourney/genimage', async (req, res) => {
     console.log('📝 Full prompt:', fullPrompt);
 
     const result = await client.generateImageViaAPI(fullPrompt, options);
-    
+
     if (result.success) {
       healthStatus.successfulRequests++;
       // Extract jobId and batchSize
       const jobId = (result.jobId) || (result.data && result.data.success && result.data.success[0] && result.data.success[0].job_id);
       const batchSize = (result.data && result.data.success && result.data.success[0] && result.data.success[0].meta && result.data.success[0].meta.batch_size) || 4;
 
-      // Update job_id in database (only if idea_id provided)
-      if (supabaseAdmin && ideaId && jobId) {
+      // Update job_id in database (only if design_id provided)
+      if (supabaseAdmin && designId && jobId) {
         try {
           await supabaseAdmin
             .from('product_design')
@@ -386,22 +388,22 @@ app.post('/midjourney/genimage', async (req, res) => {
               job_id: jobId,
               job_updated_at: new Date().toISOString()
             })
-            .eq('id', ideaId);
+            .eq('id', designId);
           console.log('✅ Updated job_id in database:', jobId);
         } catch (dbError) {
           console.error('❌ Error updating job_id:', dbError.message);
         }
       }
 
-      // Start polling job (only if idea_id provided)
-      if (jobId && ideaId) {
+      // Start polling job (only if design_id provided)
+      if (jobId && designId) {
         try {
-          startPollingJob(jobId, ideaId, userId, batchSize);
-          console.log('✅ Started polling job for idea:', ideaId);
+          startPollingJob(jobId, designId, userId, batchSize);
+          console.log('✅ Started polling job for design:', designId);
         } catch (e) {
           console.error('❌ Không thể khởi động poll job:', e.message);
         }
-      } else if (jobId && !ideaId) {
+      } else if (jobId && !designId) {
         console.log('ℹ️ Job created but not polling (standalone mode):', jobId);
       }
 
@@ -414,14 +416,14 @@ app.post('/midjourney/genimage', async (req, res) => {
         batchSize,
         status: result.status,
         retryCount: result.retryCount,
-        mode: ideaId ? 'database' : 'standalone',
+        mode: designId ? 'database' : 'standalone',
         timestamp: new Date().toISOString()
       });
     } else {
       healthStatus.failedRequests++;
 
-      // Update job status to 'failed' when generation fails (only if idea_id provided)
-      if (supabaseAdmin && ideaId) {
+      // Update job status to 'failed' when generation fails (only if design_id provided)
+      if (supabaseAdmin && designId) {
         try {
           await supabaseAdmin
             .from('product_design')
@@ -430,8 +432,8 @@ app.post('/midjourney/genimage', async (req, res) => {
               error_message: result.error || 'Generation failed',
               job_updated_at: new Date().toISOString()
             })
-            .eq('id', ideaId);
-          console.log('✅ Updated job status to failed for idea:', ideaId);
+            .eq('id', designId);
+          console.log('✅ Updated job status to failed for design:', designId);
         } catch (dbError) {
           console.error('❌ Error updating job status to failed:', dbError.message);
         }

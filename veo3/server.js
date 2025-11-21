@@ -248,8 +248,13 @@ async function processVideoGeneration(jobId, prompt) {
     job.startedAt = new Date().toISOString();
 
     browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      headless: false,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu'
+      ],
+      headless: 'new',
     });
 
     const page = await browser.newPage();
